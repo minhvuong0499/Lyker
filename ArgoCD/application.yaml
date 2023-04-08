@@ -1,18 +1,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-app
-  namespace: argocd
+  name: lyker
 spec:
   project: default
   source:
-    repoURL: https://github.com/my-org/my-app.git
+    repoURL: https://github.com/onai254/Lyker.git
+    path: Kubernetes
     targetRevision: HEAD
-    path: app/
   destination:
-    namespace: my-app-namespace
     server: https://kubernetes.default.svc
+    namespace: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+  ignoreDifferences:
+    - group: "apps"
+      kind: "Deployment"
+      jsonPointers:
+        - /spec/template/metadata/annotations
+        - /spec/template/metadata/labels
+    - group: "apps"
+      kind: "StatefulSet"
+      jsonPointers:
+        - /spec/template/metadata/annotations
+        - /spec/template/metadata/labels
